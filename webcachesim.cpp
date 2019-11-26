@@ -45,6 +45,7 @@ int main (int argc, char* argv[])
 
   ifstream infile;
   long long reqs = 0, hits = 0;
+  long long reqs_size = 0, hits_size = 0;
   long long t, id, size;
 
   cerr << "running..." << endl;
@@ -54,10 +55,12 @@ int main (int argc, char* argv[])
   while (infile >> t >> id >> size)
     {
         reqs++;
+        reqs_size += size;
         
         req->reinit(id,size);
         if(webcache->lookup(req)) {
             hits++;
+            hits_size += size;
         } else {
             webcache->admit(req);
         }
@@ -67,6 +70,8 @@ int main (int argc, char* argv[])
 
   infile.close();
   cout << cacheType << " " << cache_size << " " << paramSummary << " "
+       << reqs_size << " " << hits_size << " "
+       << double(hits_size)/reqs_size << " "
        << reqs << " " << hits << " "
        << double(hits)/reqs << endl;
 
